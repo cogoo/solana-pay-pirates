@@ -2,8 +2,6 @@
 
 ## Introduction
 
-## Setup
-
 ### Install Dependencies
 
 ```bash
@@ -16,13 +14,26 @@ npm i
 npx vercel dev
 ```
 
-## Workshop Agenda
+### Testing w/ SolanaPay
+
+Register for a free account at [ngrok](https://ngrok.com/)
+
+ngrok is the fastest way to put your app on the internet. Test your development server without deploying.
+
+Start local development server:
+
+```bash
+npx vercel dev
+```
+
+In another terminal, start ngrok:
+
+```bash
+ngrok http 3000
+```
 
 ## Resources
 
 - [Workshop Slides](https://docs.google.com/presentation/d/1VA5UeP0fhQLI7jy-dHbN-jZ79XqvrV-kEQhW7FLmdwM/edit?usp=sharing)
 - [Solana Pay docs](https://docs.solanapay.com)
-
-## References
-
-
+- [Solana Pay Github Repo](https://github.com/solana-labs/solana-pay)
