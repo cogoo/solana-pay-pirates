@@ -14,7 +14,7 @@ import {
 } from '@solana/web3.js';
 import bs58 from 'bs58';
 import dotenv from 'dotenv';
-import { SEVEN_SEAS_PROGRAM, GOLD_TOKEN_MINT } from '../CONSTANTS';
+import { SEVEN_SEAS_PROGRAM, GOLD_TOKEN_MINT } from '../constants';
 
 // Load environment variables from .env
 dotenv.config();
