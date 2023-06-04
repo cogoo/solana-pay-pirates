@@ -177,6 +177,7 @@ async function createChutuluIx(player) {
       },
     ],
     // discriminator for the chutulu instruction
+    // TODO: hash('global:chutulu');
     data: Buffer.from(new Uint8Array([84, 206, 8, 255, 98, 163, 218, 19, 1])),
   });
 }
@@ -192,6 +193,7 @@ async function prepareTx(ix) {
   // partial sign transaction
   tx.partialSign(payer);
 
+  // start: do a dance to get around a bug that is/was in web3.js
   tx = Transaction.from(
     tx.serialize({
       verifySignatures: false,
@@ -203,6 +205,7 @@ async function prepareTx(ix) {
     verifySignatures: false,
     requireAllSignatures: false,
   });
+  // end: dance
 
   return serializedTx.toString('base64');
 }
