@@ -14,7 +14,15 @@ npm i
 npx vercel dev
 ```
 
-### Testing w/ SolanaPay
+### Testing w/ Vercel and ngrok
+
+#### Vercel
+
+> You could use any cloud provider that supports serverless functions, but we'll use Vercel for this workshop.
+
+Register for a free account at [Vercel](https://vercel.com/signup)
+
+#### ngrok
 
 Register for a free account at [ngrok](https://ngrok.com/)
 
