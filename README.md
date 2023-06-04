@@ -2,6 +2,11 @@
 
 ## Introduction
 
+You'll need a mobile wallet that supports Transaction Requests to participate in this workshop.
+
+- Phantom (iOS, Android)
+- Solflare (iOS, Android)
+
 ### Install Dependencies
 
 ```bash
