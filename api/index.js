@@ -77,7 +77,6 @@ async function handlePost(request, response) {
  * @typedef {import('@solana/spl-token').Account} Account
  *
  * @param {PublicKey} player
- * @param {Account} playerTokenAccount
  * @returns {Promise<TransactionInstruction>}
  */
 async function createChutuluIx(player) {
