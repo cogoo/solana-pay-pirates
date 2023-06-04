@@ -23,6 +23,26 @@ const connection = new Connection('https://api.devnet.solana.com', 'confirmed');
 const payer = Keypair.fromSecretKey(bs58.decode(process.env.PAYER));
 
 /**
+ * @typedef {import('@vercel/node').VercelResponse} VercelResponse
+ * @typedef {import('@vercel/node').VercelRequest} VercelRequest
+ *
+ * @param {VercelRequest} request
+ * @param {VercelResponse} response
+ * @returns {Promise<VercelResponse>}
+ * */
+export default async function handler(request, response) {
+  console.log('handling request', request.method);
+
+  if (request.method === 'GET') {
+    return handleGet(response);
+  } else if (request.method === 'POST') {
+    return await handlePost(request, response);
+  } else {
+    return response.status(405).json({ error: 'Method not allowed' });
+  }
+}
+
+/**
  * @param {VercelResponse} response
  */
 function handleGet(response) {
@@ -40,6 +60,34 @@ async function handlePost(request, response) {
   // get wallet address
   const player = new PublicKey(request.body.account);
   console.log('player', player.toBase58());
+
+  // create chutulu instruction
+  const chutuluIX = await createChutuluIx(player);
+
+  // prepare transaction and serialize
+  const transaction = await prepareTx(chutuluIX);
+
+  return response.status(200).json({
+    transaction,
+    message: 'Chutulu Fire!',
+  });
+}
+
+/**
+ * @typedef {import('@solana/spl-token').Account} Account
+ *
+ * @param {PublicKey} player
+ * @param {Account} playerTokenAccount
+ * @returns {Promise<TransactionInstruction>}
+ */
+async function createChutuluIx(player) {
+  // get payer's token account
+  const playerTokenAccount = await getOrCreateAssociatedTokenAccount(
+    connection,
+    payer,
+    GOLD_TOKEN_MINT,
+    player,
+  );
 
   // start: get program derived addresses
   const [level] = PublicKey.findProgramAddressSync([Buffer.from('level')], SEVEN_SEAS_PROGRAM);
@@ -65,92 +113,6 @@ async function handlePost(request, response) {
   );
   // end: get program derived addresses
 
-  const playerTokenAccount = await getOrCreateAssociatedTokenAccount(
-    connection,
-    payer,
-    GOLD_TOKEN_MINT,
-    player,
-  );
-
-  // create chutulu instruction
-  const chutuluIX = createChutuluIx(
-    chestVault,
-    level,
-    gameActions,
-    player,
-    playerTokenAccount,
-    tokenVault,
-    tokenAccountOwnerPda,
-  );
-
-  let tx = new Transaction().add(chutuluIX);
-  tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
-  tx.feePayer = payer.publicKey;
-
-  // partial sign transaction
-  tx.partialSign(payer);
-
-  tx = Transaction.from(
-    tx.serialize({
-      verifySignatures: false,
-      requireAllSignatures: false,
-    }),
-  );
-
-  const serializedTx = tx.serialize({
-    verifySignatures: false,
-    requireAllSignatures: false,
-  });
-
-  const base64 = serializedTx.toString('base64');
-
-  return response.status(200).json({
-    transaction: base64,
-    message: 'Chutulu Fire!',
-  });
-}
-
-/**
- * @typedef {import('@vercel/node').VercelResponse} VercelResponse
- * @typedef {import('@vercel/node').VercelRequest} VercelRequest
- *
- * @param {VercelRequest} request
- * @param {VercelResponse} response
- * @returns {Promise<VercelResponse>}
- * */
-export default async function handler(request, response) {
-  console.log('handling request', request.method);
-
-  if (request.method === 'GET') {
-    return handleGet(response);
-  } else if (request.method === 'POST') {
-    return await handlePost(request, response);
-  } else {
-    return response.status(405).json({ error: 'Method not allowed' });
-  }
-}
-
-/**
- * @typedef {import('@solana/spl-token').Account} Account
- *
- * @param {PublicKey} chestVault
- * @param {PublicKey} level
- * @param {PublicKey} gameActions
- * @param {PublicKey} player
- * @param {Account} playerTokenAccount
- * @param {PublicKey} tokenVault
- * @param {PublicKey} tokenAccountOwnerPda
- * @returns {TransactionInstruction}
- */
-function createChutuluIx(
-  chestVault,
-  level,
-  gameActions,
-  player,
-  playerTokenAccount,
-  tokenVault,
-  tokenAccountOwnerPda,
-) {
   return new TransactionInstruction({
     programId: SEVEN_SEAS_PROGRAM,
     keys: [
@@ -218,4 +180,30 @@ function createChutuluIx(
     // discriminator for the chutulu instruction
     data: Buffer.from(new Uint8Array([84, 206, 8, 255, 98, 163, 218, 19, 1])),
   });
+}
+
+/**
+ * @param {TransactionInstruction} ix
+ */
+async function prepareTx(ix) {
+  let tx = new Transaction().add(ix);
+  tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+  tx.feePayer = payer.publicKey;
+
+  // partial sign transaction
+  tx.partialSign(payer);
+
+  tx = Transaction.from(
+    tx.serialize({
+      verifySignatures: false,
+      requireAllSignatures: false,
+    }),
+  );
+
+  const serializedTx = tx.serialize({
+    verifySignatures: false,
+    requireAllSignatures: false,
+  });
+
+  return serializedTx.toString('base64');
 }
