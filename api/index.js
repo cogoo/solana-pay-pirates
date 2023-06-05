@@ -15,6 +15,7 @@ import {
 import bs58 from 'bs58';
 import dotenv from 'dotenv';
 import { SEVEN_SEAS_PROGRAM, GOLD_TOKEN_MINT } from '../constants';
+import { sha256 } from 'js-sha256';
 
 // Load environment variables from .env
 dotenv.config();
@@ -112,6 +113,9 @@ async function createChutuluIx(player) {
   );
   // end: get program derived addresses
 
+  const cthulhuAnchorDiscriminator = sha256.digest('global:cthulhu').slice(0, 8);
+  const data = Buffer.from([...cthulhuAnchorDiscriminator, 0o1]);
+
   return new TransactionInstruction({
     programId: SEVEN_SEAS_PROGRAM,
     keys: [
@@ -176,9 +180,7 @@ async function createChutuluIx(player) {
         isSigner: false,
       },
     ],
-    // discriminator for the chutulu instruction
-    // TODO: hash('global:chutulu');
-    data: Buffer.from(new Uint8Array([84, 206, 8, 255, 98, 163, 218, 19, 1])),
+    data,
   });
 }
 
