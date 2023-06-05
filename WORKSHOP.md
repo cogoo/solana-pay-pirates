@@ -160,7 +160,7 @@ async function handlePost(request, response) {
 -  console.log('account', request.body .account);
 + const player = new PublicKey(request.body.account);
 +
-+ const chutuluIX = await createChutuluIx(player);
++ const chutuluIx = await createChutuluIx(player);
 +
 + const transaction = await prepareTx(chutuluIx);
 
