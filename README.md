@@ -7,18 +7,6 @@ You'll need a mobile wallet that supports Transaction Requests to participate in
 - Phantom (iOS, Android)
 - Solflare (iOS, Android)
 
-### Install Dependencies
-
-```bash
-npm i
-```
-
-### Local Development
-
-```bash
-npx vercel dev
-```
-
 ### Testing w/ Vercel and ngrok
 
 #### Vercel
@@ -48,5 +36,6 @@ ngrok http 3000
 ## Resources
 
 - [Workshop Slides](https://docs.google.com/presentation/d/1VA5UeP0fhQLI7jy-dHbN-jZ79XqvrV-kEQhW7FLmdwM/edit?usp=sharing)
+- [Workshop guide](https://hackmd.io/@cogoo/Hkkz4PjLh)
 - [Solana Pay docs](https://docs.solanapay.com)
 - [Solana Pay Github Repo](https://github.com/solana-labs/solana-pay)
