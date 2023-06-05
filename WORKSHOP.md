@@ -430,7 +430,7 @@ Add missing imports
 
 ```diff
 - import { PublicKey, Keypair, Connection, TransactionInstruction } from '@solana/web3.js';
-+ import { PublicKey, Keypair, Connection, TransactionInstruction, SystemProgram } from '@solana/web3.js';
++ import { PublicKey, Keypair, Connection, Transaction, TransactionInstruction, SystemProgram } from '@solana/web3.js';
 - import { getOrCreateAssociatedTokenAccount,  } from '@solana/spl-token';
 + import { getOrCreateAssociatedTokenAccount, ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID  } from '@solana/spl-token';
 import dotenv from 'dotenv';
