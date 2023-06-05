@@ -193,19 +193,10 @@ async function prepareTx(ix) {
   // partial sign transaction
   tx.partialSign(payer);
 
-  // start: do a dance to get around a bug that is/was in web3.js
-  tx = Transaction.from(
-    tx.serialize({
-      verifySignatures: false,
-      requireAllSignatures: false,
-    }),
-  );
-
   const serializedTx = tx.serialize({
-    verifySignatures: false,
+    verifySignatures: true,
     requireAllSignatures: false,
   });
-  // end: dance
 
   return serializedTx.toString('base64');
 }
